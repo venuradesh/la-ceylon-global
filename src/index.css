@@ -34,7 +34,12 @@ body {
   background-color: var(--light-gray);
   font-size: var(--font-size-normal);
   font-weight: var(--font-w-300);
-  padding: 0 5%;
+  padding: 0 100px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .container {
