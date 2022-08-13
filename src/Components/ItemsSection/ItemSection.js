@@ -19,7 +19,7 @@ const Container = styled.div`
   position: relative;
   top: 100px;
   padding-top: 20px;
-  width: 100%;
+  width: calc(100vw - 200px);
   height: calc(100vh - 120px);
   overflow-y: auto;
   display: flex;

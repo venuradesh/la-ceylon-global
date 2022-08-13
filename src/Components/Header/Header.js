@@ -25,7 +25,7 @@ function Header() {
 export default Header;
 
 const Container = styled.div`
-  width: calc(100vw - 10vw);
+  width: calc(100vw - 200px);
   height: 80px;
   display: flex;
   justify-content: space-between;
