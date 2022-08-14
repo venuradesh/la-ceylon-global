@@ -1,10 +1,40 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const API_URL = "http://localhost:5000/login";
 
-function Login() {
+function Login({ userLog, user }) {
+  const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+
+  const onSubmitClick = (e) => {
+    e.preventDefault();
+
+    if (userName && password) {
+      axios
+        .get(API_URL, {
+          params: {
+            userName,
+            password,
+          },
+        })
+        .then((res) => {
+          if (res.data.error === false && res.data.message.length !== 0) {
+            userLog(true);
+            user(res.data.message[0]);
+            navigate(`/home/${res.data.message[0].userId}`);
+          }
+        })
+        .catch((err) => console.error(err));
+    } else {
+      setErr("Fill both userName and password fields");
+      return;
+    }
+  };
 
   return (
     <Wrapper className="wrapper-page">
@@ -27,9 +57,12 @@ function Login() {
             </label>
           </div>
         </div>
+        {err ? <div className="error-message">*{err}</div> : <></>}
         <div className="btn-container">
-          <div className="btn submit-btn">Submit</div>
-          <div className="btn reset-btn">Reset</div>
+          <button className="btn submit-btn" onClick={(e) => onSubmitClick(e)}>
+            Submit
+          </button>
+          <button className="btn reset-btn">Reset</button>
         </div>
         <Link to="/register" className="create-acc">
           Create an account
@@ -49,7 +82,7 @@ const Wrapper = styled.div`
   justify-content: center;
 `;
 
-const Container = styled.div`
+const Container = styled.form`
   width: 400px;
   height: max-content;
   padding: 20px 20px;
@@ -179,6 +212,13 @@ const Container = styled.div`
         transform: scale(1.02);
       }
     }
+  }
+
+  .error-message {
+    display: flex;
+    justify-content: center;
+    margin-top: -10px;
+    margin-bottom: 10px;
   }
 
   .create-acc {

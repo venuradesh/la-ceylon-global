@@ -1,17 +1,58 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const API_URL = "http://localhost:5000/register";
 
 function Register() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [mobile, setMobile] = useState("");
+  const [file, setFile] = useState({});
+  const [fileName, setFileName] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
 
   const onSubmitClick = (e) => {
     e.preventDefault();
+
+    if (name && id && postalCode && mobile && fileName && userName && password) {
+      const data = new FormData();
+      data.append("image", file, fileName);
+      data.append("name", name);
+      data.append("id", id);
+      data.append("postalCode", postalCode);
+      data.append("mobile", mobile);
+      data.append("userName", userName);
+      data.append("password", password);
+
+      axios
+        .post(API_URL, data)
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.message === "ok") {
+            navigate("/login");
+          }
+        })
+        .catch((err) => {
+          if (err.response.data.message.code === "ER_DUP_ENTRY") {
+            setErr("UserName, Mobile No or ID/BRP already exists");
+          }
+        });
+    } else {
+      setErr("Have to fill all the fields");
+      return;
+    }
+  };
+
+  const onFileChange = () => {
+    setFile(document.getElementById("file-input").files[0]);
+    setFileName(document.getElementById("file-input").files[0].name);
   };
 
   return (
@@ -44,9 +85,9 @@ function Register() {
             </label>
           </div>
           <div className="file-container input-container">
-            <input type="file" name="file" id="file-input" required />
+            <input type="file" name="image" id="file-input" required onChange={onFileChange} />
             <div className="selectBtn" onClick={() => document.getElementById("file-input").click()}>
-              Click here to add Image of Id / BRP
+              {!fileName ? <span>Click here to add Image of Id / BRP</span> : <span>{fileName}</span>}
             </div>
           </div>
           <div className="phone-container input-container">
@@ -67,7 +108,7 @@ function Register() {
               <span className="content-container">Password</span>
             </label>
           </div>
-
+          {err ? <div className="error-message">*{err}</div> : <></>}
           <div className="btn-container">
             <button type="submit" onClick={onSubmitClick}>
               Submit
@@ -244,6 +285,13 @@ const Container = styled.div`
             transform: scale(1.02);
           }
         }
+      }
+
+      .error-message {
+        display: flex;
+        justify-content: center;
+        margin-top: -10px;
+        margin-bottom: 10px;
       }
     }
   }

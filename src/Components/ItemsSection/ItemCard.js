@@ -1,18 +1,21 @@
 import React from "react";
 import styled from "styled-components";
-import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 
-function ItemCard() {
+function ItemCard({ data }) {
+  console.log(data);
   return (
     <Container>
-      <img src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" alt="t shirt 1" />
+      <img src={`http://localhost:5000/uploads/${data.coverImage}`} alt="t shirt 1" />
       <div className="background-filter"></div>
-      <div className="title-container">T shirt White</div>
+      <div className="title-container">{data.name}</div>
 
       <div className="slide-up-container">
-        <div className="price">Rs.3000</div>
+        <div className="price-quantity">
+          <div className="price">{data.price}</div>
+          <div className="quantity">Qty: {data.quantityAvailable}</div>
+        </div>
         <div className="delivery">
-          <LocalShippingOutlinedIcon className="shipping-icon" />
+          <div className="btn">Deliver to Home</div>
         </div>
       </div>
     </Container>
@@ -43,40 +46,75 @@ const Container = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    opacity: 0.3;
+    opacity: 0.5;
   }
 
   .title-container {
-    font-size: var(--font-size-normal);
+    width: 100%;
+    font-size: var(--font-size-sub-heading);
     position: absolute;
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
     color: var(--light-gray);
     font-weight: var(--font-w-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .slide-up-container {
     width: 100%;
-    height: 50px;
+    height: 100px;
     position: absolute;
     bottom: -100%;
     left: 0;
     background-color: var(--dark-gray);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
     transition: all 0.5s ease;
+    cursor: default;
 
-    .price {
-      color: var(--light-gray);
-      cursor: default;
+    .price-quantity {
+      padding-top: 10px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .price,
+      .quantity {
+        color: var(--light-gray);
+        cursor: default;
+      }
     }
 
-    .shipping-icon {
-      color: var(--light-gray);
-      cursor: pointer;
+    .delivery {
+      margin-bottom: 15px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 40px;
+        background-color: var(--light-gray);
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--light-gray-alt);
+        }
+      }
     }
   }
 
