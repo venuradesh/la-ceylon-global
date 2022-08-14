@@ -1,16 +1,27 @@
 //dependencies
-import React from "react";
+import React, { useState, useMemo } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 //components
 import ItemCard from "./ItemCard";
+const API_URL = "http://localhost:5000/items";
 
 function ItemSection() {
-  return (
-    <Container>
-      <ItemCard />
-    </Container>
-  );
+  const [data, setData] = useState(null);
+
+  useMemo(() => {
+    axios
+      .get(API_URL)
+      .then((res) => {
+        setData(res.data.message);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  return <Container>{data && data.map((item, index) => <ItemCard data={item} key={index} />)}</Container>;
 }
 
 export default ItemSection;
