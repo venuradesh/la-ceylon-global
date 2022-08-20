@@ -8,7 +8,6 @@ import path from "path";
 const app = express();
 const PORT = process.env.PORT || 5000;
 let fileName;
-let databaseName = "";
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -53,7 +52,7 @@ db.connect((err) => {
   create table if not exists items (
       itemId integer auto_increment unique not null,
       name varchar(200) not null,
-      price varchar(200) not null,
+      price int(30) not null,
       quantityAvailable integer not null,
       coverImage varchar(200) not null,
       primary key(itemId)
@@ -107,5 +106,14 @@ app.get("/items", (req, res) => {
   db.query(query, (err, result) => {
     if (err) res.status(500).send({ message: err.message, error: true });
     else res.status(200).send({ message: result, error: false });
+  });
+});
+
+app.post("/items", uploads.single("coverImage"), (req, res) => {
+  const data = req.body;
+  const query = "INSERT INTO items(name, price, quantityAvailable, coverImage) VALUES(?, ?, ?, ?);";
+  db.query(query, [data.name, data.price, data.qtyAvailable, fileName], (err, result) => {
+    if (err) res.status(400).send({ message: err.message, error: true });
+    else res.status(201).send({ message: result, error: false });
   });
 });
