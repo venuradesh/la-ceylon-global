@@ -5,31 +5,43 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API_URL = "http://localhost:5000/login";
 
-function Login({ userLog, user }) {
+function Login({ userLog, user, adminLogged }) {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
 
   const onSubmitClick = (e) => {
+    const admin = {
+      userName: "admin",
+      password: "1234",
+    };
+
     e.preventDefault();
 
     if (userName && password) {
-      axios
-        .get(API_URL, {
-          params: {
-            userName,
-            password,
-          },
-        })
-        .then((res) => {
-          if (res.data.error === false && res.data.message.length !== 0) {
-            userLog(true);
-            user(res.data.message[0]);
-            navigate(`/home/${res.data.message[0].userId}`);
-          }
-        })
-        .catch((err) => console.error(err));
+      if (userName === admin.userName && password === admin.password) {
+        userLog(true);
+        user(admin);
+        adminLogged(true);
+        navigate(`/home/admin`);
+      } else {
+        axios
+          .get(API_URL, {
+            params: {
+              userName,
+              password,
+            },
+          })
+          .then((res) => {
+            if (res.data.error === false && res.data.message.length !== 0) {
+              userLog(true);
+              user(res.data.message[0]);
+              navigate(`/home/${res.data.message[0].userId}`);
+            }
+          })
+          .catch((err) => console.error(err));
+      }
     } else {
       setErr("Fill both userName and password fields");
       return;

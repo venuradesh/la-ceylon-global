@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-function ItemCard({ data, itemClick, itemDetails }) {
+function AdminItemCard({ data }) {
   return (
     <Container>
       <img src={`http://localhost:5000/uploads/${data.coverImage}`} alt="t shirt 1" />
@@ -10,26 +10,18 @@ function ItemCard({ data, itemClick, itemDetails }) {
 
       <div className="slide-up-container">
         <div className="price-quantity">
-          <div className="price">Rs. {data.price}/-</div>
+          <div className="price">{data.price}</div>
           <div className="quantity">Qty: {data.quantityAvailable}</div>
         </div>
         <div className="delivery">
-          <div
-            className="btn"
-            onClick={() => {
-              itemClick(true);
-              itemDetails(data);
-            }}
-          >
-            Add to Cart
-          </div>
+          <div className="btn">Add to Cart</div>
         </div>
       </div>
     </Container>
   );
 }
 
-export default ItemCard;
+export default AdminItemCard;
 
 const Container = styled.div`
   position: relative;
